@@ -1,5 +1,5 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
+  "image": "mcr.microsoft.com/devcontainers/rust:1",
   "waitFor": "onCreateCommand",
   "onCreateCommand": ".devcontainer/setup.sh",
   "updateContentCommand": "cargo build",
