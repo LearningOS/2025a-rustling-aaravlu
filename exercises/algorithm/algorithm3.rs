@@ -3,10 +3,43 @@
     This problem requires you to implement a sorting algorithm
     you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
 
-fn sort<T>(array: &mut [T]) {
+fn sort<T: Ord>(array: &mut [T]) {
     //TODO
+    let len = array.len();
+    if len <= 1 {
+        return;
+    }
+    fn sift_down<T: Ord>(arr: &mut [T], mut root: usize, heap_size: usize) {
+        loop {
+            let left_child = 2 * root + 1;
+            if left_child >= heap_size {
+                break;
+            }
+            let mut biggest = if arr[left_child] > arr[root] {
+                left_child
+            } else {
+                root
+            };
+            if left_child + 1 < heap_size && arr[left_child + 1] > arr[biggest] {
+                biggest = left_child + 1;
+            }
+            if biggest == root {
+                break;
+            }
+            arr.swap(root, biggest);
+            root = biggest;
+        }
+    }
+
+    for start in (0..len / 2).rev() {
+        sift_down(array, start, len);
+    }
+
+    for end in (1..len).rev() {
+        array.swap(0, end);
+        sift_down(array, 0, end);
+    }
 }
 #[cfg(test)]
 mod tests {

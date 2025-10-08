@@ -1,8 +1,7 @@
 /*
-	graph
-	This problem requires you to implement a basic graph functio
+    graph
+    This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -30,6 +29,36 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let table = self.adjacency_table_mutable();
+        let (l, r, val) = edge;
+        if let Some(ref mut adj) = table.get_mut(l) {
+            let mut exist = false;
+            for (ref mut s, ref mut v) in adj.iter_mut() {
+                if s == r {
+                    *v = val;
+                    exist = true;
+                }
+            }
+            if !exist {
+                adj.push((String::from(r), val));
+            }
+        } else {
+            table.insert(String::from(l), vec![(String::from(r), val)]);
+        }
+        if let Some(ref mut adj) = table.get_mut(r) {
+            let mut exist = false;
+            for (ref mut s, ref mut v) in adj.iter_mut() {
+                if s == l {
+                    *v = val;
+                    exist = true;
+                }
+            }
+            if !exist {
+                adj.push((String::from(l), val));
+            }
+        } else {
+            table.insert(String::from(r), vec![(String::from(l), val)]);
+        }
     }
 }
 pub trait Graph {
@@ -38,7 +67,13 @@ pub trait Graph {
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
         //TODO
-		true
+
+        if self.contains(node) {
+            return false;
+        }
+        let mut table = self.adjacency_table_mutable();
+        table.insert(String::from(node), Vec::new());
+        true
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO

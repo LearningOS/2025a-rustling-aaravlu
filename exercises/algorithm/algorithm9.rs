@@ -2,14 +2,13 @@
     heap
     This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
 
 pub struct Heap<T>
 where
-    T: Default,
+    T: Default + Ord,
 {
     count: usize,
     items: Vec<T>,
@@ -18,7 +17,7 @@ where
 
 impl<T> Heap<T>
 where
-    T: Default,
+    T: Default + Ord,
 {
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
@@ -38,6 +37,18 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.count += 1;
+        self.items.push(value);
+        let mut idx = self.count;
+        while idx > 1 {
+            let mut par_idx = self.parent_idx(idx);
+            if (self.comparator)(&self.items[par_idx], &self.items[idx]) {
+                break;
+            } else {
+                self.items.swap(par_idx, idx);
+                idx = par_idx;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +69,16 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-        0
+        let l_idx = self.left_child_idx(idx);
+        let r_idx = self.right_child_idx(idx);
+        if r_idx >= self.count {
+            return l_idx;
+        }
+        if (self.comparator)(&self.items[l_idx], &self.items[r_idx]) {
+            l_idx
+        } else {
+            r_idx
+        }
     }
 }
 
@@ -79,13 +99,29 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default + Ord,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
         //TODO
-        None
+        if self.count == 0 {
+            return None;
+        }
+
+        self.items.swap(1usize, self.count);
+        self.count -= 1;
+        let mut idx = 1;
+        while self.children_present(idx) {
+            let ex_child = self.smallest_child_idx(idx);
+            if (self.comparator)(&self.items[idx], &self.items[ex_child]) {
+                break;
+            } else {
+                self.items.swap(idx, ex_child);
+                idx = ex_child;
+            }
+        }
+        self.items.pop()
     }
 }
 

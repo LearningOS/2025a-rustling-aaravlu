@@ -2,7 +2,6 @@
     single linked list merge
     This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -26,13 +25,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: Ord> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: Ord> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -68,11 +67,69 @@ impl<T> LinkedList<T> {
     }
     pub fn merge(list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self {
         //TODO
-        Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut ret = LinkedList::new();
+
+        let mut a_node = list_a.start;
+        let mut b_node = list_b.start;
+        ret.length = list_a.length + list_b.length;
+        let mut stop = false;
+        let mut first = true;
+
+        while !stop {
+            match (a_node, b_node) {
+                (Some(a_ptr), Some(b_ptr)) => {
+                    let a_val = unsafe { &(*a_ptr.as_ptr()).val };
+                    let b_val = unsafe { &(*b_ptr.as_ptr()).val };
+                    if a_val <= b_val {
+                        if first {
+                            ret.start = a_node;
+                            ret.end = a_node;
+                            first = false;
+                        } else {
+                            unsafe { (*ret.end.unwrap().as_ptr()).next = a_node };
+                            ret.end = a_node;
+                        }
+                        a_node = unsafe { (*a_node.unwrap().as_ptr()).next };
+                    } else {
+                        if first {
+                            ret.start = b_node;
+                            ret.end = b_node;
+                            first = false;
+                        } else {
+                            unsafe { (*ret.end.unwrap().as_ptr()).next = b_node };
+                            ret.end = b_node;
+                        }
+                        b_node = unsafe { (*b_node.unwrap().as_ptr()).next };
+                    }
+                }
+                (None, None) => {
+                    stop = true;
+                }
+                (Some(a_ptr), None) => {
+                    if first {
+                        ret.start = a_node;
+                        ret.end = list_a.end;
+                        first = false;
+                    } else {
+                        unsafe { (*ret.end.unwrap().as_ptr()).next = a_node };
+                        ret.end = list_a.end;
+                    }
+                    stop = true;
+                }
+                (None, Some(b_ptr)) => {
+                    if first {
+                        ret.start = b_node;
+                        ret.end = list_b.end;
+                        first = false;
+                    } else {
+                        unsafe { (*ret.end.unwrap().as_ptr()).next = b_node };
+                        ret.end = list_b.end;
+                    }
+                    stop = true;
+                }
+            }
         }
+        ret
     }
 }
 
