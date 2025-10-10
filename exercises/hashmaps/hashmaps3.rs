@@ -14,6 +14,8 @@
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
 
+// 
+
 use std::collections::HashMap;
 
 // A structure to store the goal details of a team.
@@ -32,22 +34,37 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         let team_1_score: u8 = v[2].parse().unwrap();
         let team_2_name = v[1].to_string();
         let team_2_score: u8 = v[3].parse().unwrap();
-        // Update team 1's record
-        let team_1 = scores.entry(team_1_name.clone()).or_insert(Team {
-            goals_scored: 0,
-            goals_conceded: 0,
-        });
-        team_1.goals_scored += team_1_score;
-        team_1.goals_conceded += team_2_score;
-
-        // Update team 2's record
-        let team_2 = scores.entry(team_2_name.clone()).or_insert(Team {
-            goals_scored: 0,
-            goals_conceded: 0,
-        });
-        team_2.goals_scored += team_2_score;
-        team_2.goals_conceded += team_1_score;
+        // TODO: Populate the scores table with details extracted from the
+        // current line. Keep in mind that goals scored by team_1
+        // will be the number of goals conceded from team_2, and similarly
+        // goals scored by team_2 will be the number of goals conceded by
+        // team_1.
+        if let Some(ref mut team1) = scores.get_mut(&team_1_name) {
+            team1.goals_scored += team_1_score;
+            team1.goals_conceded += team_2_score;
+        } else {
+            scores.insert(
+                team_1_name,
+                Team {
+                    goals_scored: team_1_score,
+                    goals_conceded: team_2_score,
+                },
+            );
+        }
+        if let Some(ref mut team2) = scores.get_mut(&team_2_name) {
+            team2.goals_scored += team_2_score;
+            team2.goals_conceded += team_1_score;
+        } else {
+            scores.insert(
+                team_2_name,
+                Team {
+                    goals_scored: team_2_score,
+                    goals_conceded: team_1_score,
+                },
+            );
+        }
     }
+
     scores
 }
 

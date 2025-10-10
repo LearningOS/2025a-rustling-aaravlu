@@ -7,9 +7,12 @@
 // Execute `rustlings hint threads2` or use the `hint` watch subcommand for a
 // hint.
 
-use std::sync::{Arc, Mutex};
+// 
+
+use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
+use std::sync::Mutex;
 
 struct JobStatus {
     jobs_completed: u32,
@@ -22,17 +25,18 @@ fn main() {
         let status_shared = Arc::clone(&status);
         let handle = thread::spawn(move || {
             thread::sleep(Duration::from_millis(250));
-            // Lock the mutex before updating the shared value
-            let mut status = status_shared.lock().unwrap();
-            status.jobs_completed += 1;
+            // TODO: You must take an action before you update a shared value
+            let mut sta = status_shared.lock().unwrap();
+            (*sta).jobs_completed += 1;
         });
         handles.push(handle);
     }
     for handle in handles {
         handle.join().unwrap();
-        // Print the final value of JobStatus.jobs_completed
-        // Joining all handles ensures all threads have completed their work
-        // before we check the final count
-        println!("jobs completed {}", status.lock().unwrap().jobs_completed);
+        // TODO: Print the value of the JobStatus.jobs_completed. Did you notice
+        // anything interesting in the output? Do you have to 'join' on all the
+        // handles?
+        let sta = status.lock().unwrap();
+        println!("jobs completed {:?}", sta.jobs_completed);
     }
 }

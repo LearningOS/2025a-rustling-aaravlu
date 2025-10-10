@@ -16,35 +16,19 @@
 //
 // Execute `rustlings hint quiz3` or use the `hint` watch subcommand for a hint.
 
-pub struct ReportCard<T: Grade> {
+//
+use std::fmt::Display;
+pub struct ReportCard<T: Display> {
     pub grade: T,
     pub student_name: String,
     pub student_age: u8,
 }
 
-pub trait Grade {
-    fn display(&self) -> String;
-}
-
-impl Grade for f32 {
-    fn display(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl Grade for &str {
-    fn display(&self) -> String {
-        self.to_string()
-    }
-}
-
-impl<T: Grade> ReportCard<T> {
+impl<T: Display> ReportCard<T> {
     pub fn print(&self) -> String {
         format!(
             "{} ({}) - achieved a grade of {}",
-            &self.student_name,
-            &self.student_age,
-            self.grade.display()
+            &self.student_name, &self.student_age, &self.grade
         )
     }
 }

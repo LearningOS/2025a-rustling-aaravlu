@@ -10,6 +10,8 @@
 //
 // Execute `rustlings hint rc1` or use the `hint` watch subcommand for a hint.
 
+// 
+
 use std::rc::Rc;
 
 #[derive(Debug)]
@@ -90,15 +92,15 @@ fn main() {
     println!("reference count = {}", Rc::strong_count(&sun)); // 4 references
 
     // TODO
-    drop(venus);
+    drop(earth);
     println!("reference count = {}", Rc::strong_count(&sun)); // 3 references
 
     // TODO
-    drop(mercury);
+    drop(venus);
     println!("reference count = {}", Rc::strong_count(&sun)); // 2 references
 
     // TODO
-    drop(earth);
+    drop(mercury);
     println!("reference count = {}", Rc::strong_count(&sun)); // 1 reference
 
     assert_eq!(Rc::strong_count(&sun), 1);

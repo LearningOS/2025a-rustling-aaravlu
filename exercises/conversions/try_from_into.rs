@@ -27,6 +27,8 @@ enum IntoColorError {
     IntConversion,
 }
 
+// 
+
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
 // integers, an array of three integers, and a slice of integers.
@@ -39,15 +41,14 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
-        let (red, green, blue) = tuple;
-        if red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255 {
-            Err(IntoColorError::IntConversion)
-        } else {
-            Ok(Color {
-                red: red as u8,
-                green: green as u8,
-                blue: blue as u8,
-            })
+        let (r, g, b) = tuple;
+        match (r, g, b) {
+            (0..=255, 0..=255, 0..=255) => Ok(Color {
+                red: r as u8,
+                green: g as u8,
+                blue: b as u8,
+            }),
+            _ => Err(IntoColorError::IntConversion),
         }
     }
 }
@@ -56,15 +57,14 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
-        let [red, green, blue] = arr;
-        if red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255 {
-            Err(IntoColorError::IntConversion)
-        } else {
-            Ok(Color {
-                red: red as u8,
-                green: green as u8,
-                blue: blue as u8,
-            })
+        let [r, g, b] = arr;
+        match (r, g, b) {
+            (0..=255, 0..=255, 0..=255) => Ok(Color {
+                red: r as u8,
+                green: g as u8,
+                blue: b as u8,
+            }),
+            _ => Err(IntoColorError::IntConversion),
         }
     }
 }
@@ -73,22 +73,21 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
-        let mut ret = Err(IntoColorError::IntConversion);
-
-        if slice.len() == 3 {
-            let (red, green, blue) = (slice[0], slice[1], slice[2]);
-            if red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255 {
-            } else {
-                ret = Ok(Color {
-                    red: red as u8,
-                    green: green as u8,
-                    blue: blue as u8,
-                })
-            }
-        } else {
-            ret = Err(IntoColorError::BadLen)
+        let len = slice.len();
+        if len != 3 {
+            return Err(IntoColorError::BadLen);
         }
-        ret
+        let r = slice[0];
+        let g = slice[1];
+        let b = slice[2];
+        match (r, g, b) {
+            (0..=255, 0..=255, 0..=255) => Ok(Color {
+                red: r as u8,
+                green: g as u8,
+                blue: b as u8,
+            }),
+            _ => Err(IntoColorError::IntConversion),
+        }
     }
 }
 

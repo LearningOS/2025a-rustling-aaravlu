@@ -3,6 +3,7 @@
     This question requires you to use a stack to achieve a bracket match
 */
 
+// 
 #[derive(Debug)]
 struct Stack<T> {
     size: usize,
@@ -121,10 +122,11 @@ fn bracket_match(bracket: &str) -> bool {
         }
     }
     if sta.is_empty() {
-        true
-    } else {
-        false
-    }
+		true
+	}
+	else {
+		false
+	}
 }
 
 #[cfg(test)]

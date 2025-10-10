@@ -6,6 +6,8 @@
 // Execute `rustlings hint generics2` or use the `hint` watch subcommand for a
 // hint.
 
+// 
+
 struct Wrapper<T> {
     value: T,
 }

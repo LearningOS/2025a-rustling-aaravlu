@@ -3,6 +3,7 @@
     This problem requires you to implement a basic interface for a binary tree
 */
 
+//
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -86,19 +87,21 @@ where
                 Ordering::Less => {
                     if let Some(ref mut r_node) = node.right {
                         node = r_node;
-                    } else {
+                    }
+                    else {
                         node.right = Some(Box::new(TreeNode::new(value)));
                         return;
                     }
-                }
+                },
                 Ordering::Greater => {
                     if let Some(ref mut l_node) = node.left {
                         node = l_node;
-                    } else {
+                    }
+                    else {
                         node.left = Some(Box::new(TreeNode::new(value)));
                         return;
                     }
-                }
+                },
             }
         }
     }
